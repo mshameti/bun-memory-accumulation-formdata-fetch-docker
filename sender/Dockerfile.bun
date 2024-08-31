@@ -1,0 +1,13 @@
+FROM oven/bun:1.1.26
+
+COPY . .
+
+# not sure this does anything, but not effective anyway
+# ENV BUN_JSC_forceRAMSize=134217728
+
+CMD [ "bun", "run", "script.js" ]
+
+# --smol does not prevent memory accumulation
+# CMD [ "bun", "--smol", "run", "script.js" ]
+
+

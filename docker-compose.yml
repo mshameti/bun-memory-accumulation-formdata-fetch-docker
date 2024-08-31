@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  bun:
+    build: 
+      context: ./sender
+      dockerfile: Dockerfile.bun
+    environment:
+      - RUNTIME=bun
+    depends_on: [receiver]
+    mem_limit: 1024m
+
+
+  node:
+    build: 
+      context: ./sender
+      dockerfile: Dockerfile.node
+    environment:
+      - RUNTIME=node
+    depends_on: [receiver]
+    mem_limit: 1024m
+
+  receiver:
+    build: ./receiver
+    ports:
+      - "3000:3000"
