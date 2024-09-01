@@ -30,11 +30,16 @@ async function runTest() {
     //   }, 100);
     // }
 
-    console.log(
-      process.env.RUNTIME === "bun" ? "\t\t\tBun:" : "Node:",
-      Math.trunc(process.memoryUsage().rss / 1024 / 1024),
-      "MB"
-    );
+    // Trigger read of stream
+    const blob = await res.blob();
+
+    if (blob) {
+      console.log(
+        process.env.RUNTIME === "bun" ? "\t\t\tBun:" : "Node:",
+        Math.trunc(process.memoryUsage().rss / 1024 / 1024),
+        "MB"
+      );
+    }
 
     i++;
   }
