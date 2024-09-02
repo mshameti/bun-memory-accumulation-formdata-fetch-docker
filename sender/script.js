@@ -55,10 +55,10 @@ async function runLeak2() {
       throw new Error("Invalid response");
     }
 
-    // Memory Leak #2: Reading response after accessing body
+    // Memory leak #2: Reading response after accessing body.
     const buffer = await res.arrayBuffer();
 
-    // Workaround fix 2 for Leak 2: Use Bun-optimized API.
+    // Workaround fix #2: Use Bun-optimized API.
     // const buffer = await Bun.readableStreamToArrayBuffer(res.body);
 
     if (buffer) {
