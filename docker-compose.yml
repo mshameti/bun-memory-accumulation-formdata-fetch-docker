@@ -6,18 +6,19 @@ services:
       dockerfile: Dockerfile.bun
     environment:
       - RUNTIME=bun
+      - LEAK=${LEAK}
     depends_on: [receiver]
-    mem_limit: 1024m
-
-
+    mem_limit: 512m
+ 
   node:
     build: 
       context: ./sender
       dockerfile: Dockerfile.node
     environment:
       - RUNTIME=node
+      - LEAK=${LEAK}
     depends_on: [receiver]
-    mem_limit: 1024m
+    mem_limit: 512m
 
   receiver:
     build: ./receiver

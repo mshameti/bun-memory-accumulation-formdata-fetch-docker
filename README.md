@@ -14,6 +14,14 @@ https://github.com/oven-sh/bun/pull/7470
 
 ### Run with:
 
-docker compose up --build
+LEAK=1 docker compose up --build
+
+OR
+
+LEAK=2 docker compose up --build
 
 See terminal for logs of memory accumulation.
+
+## Attributions
+
+This project uses third-party images. For detailed attribution information, please see the [ATTRIBUTIONS.md](ATTRIBUTIONS.md) file.

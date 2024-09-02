@@ -1,11 +1,11 @@
-async function runTest() {
+async function runLeak1() {
   let i = 0;
-  while (i < 1000) {
+  while (i < 10000) {
     let formData = new FormData();
     let fiveMBFile = new Blob(["a".repeat(5242880)]);
     formData.append("files", fiveMBFile);
 
-    // Issue: Memory accumulation in Bun until container OOM
+    // Memory Leak 1: FormData as Request Body
     const res = await fetch("http://receiver:3000", {
       method: "POST",
       body: formData,
@@ -31,9 +31,9 @@ async function runTest() {
     // }
 
     // Trigger read of stream
-    const blob = await res.blob();
+    const buffer = await res.arrayBuffer();
 
-    if (blob) {
+    if (buffer) {
       console.log(
         process.env.RUNTIME === "bun" ? "\t\t\tBun:" : "Node:",
         Math.trunc(process.memoryUsage().rss / 1024 / 1024),
@@ -45,4 +45,36 @@ async function runTest() {
   }
 }
 
-runTest().catch(console.error);
+async function runLeak2() {
+  let i = 0;
+  while (i < 10000) {
+    const res = await fetch("http://receiver:3000/image", { method: "GET" });
+
+    // Workaround fix #1: Comment this out to fix leak.
+    if (!res.body) {
+      throw new Error("Invalid response");
+    }
+
+    // Memory Leak #2: Accessing body before arrayBuffer().
+    const buffer = await res.arrayBuffer();
+
+    // Workaround fix 2 for Leak 2: Use Bun-optimized API.
+    // const buffer = await Bun.readableStreamToArrayBuffer(res.body);
+
+    if (buffer) {
+      console.log(
+        process.env.RUNTIME === "bun" ? "\t\t\tBun:" : "Node:",
+        Math.trunc(process.memoryUsage().rss / 1024 / 1024),
+        "MB"
+      );
+    }
+  }
+}
+
+if (process.env.LEAK === "2") {
+  console.log("Running Mem Leak 2 Test");
+  runLeak2().catch(console.error);
+} else {
+  console.log("Running Mem Leak 1 Test");
+  runLeak1().catch(console.error);
+}
