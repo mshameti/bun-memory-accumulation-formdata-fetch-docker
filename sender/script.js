@@ -50,12 +50,12 @@ async function runLeak2() {
   while (i < 10000) {
     const res = await fetch("http://receiver:3000/image", { method: "GET" });
 
-    // Workaround fix #1: Comment this out to fix leak.
+    // Workaround fix #1: Comment out the usage of 'body'.
     if (!res.body) {
       throw new Error("Invalid response");
     }
 
-    // Memory Leak #2: Accessing body before arrayBuffer().
+    // Memory Leak #2: Reading response after accessing body
     const buffer = await res.arrayBuffer();
 
     // Workaround fix 2 for Leak 2: Use Bun-optimized API.
